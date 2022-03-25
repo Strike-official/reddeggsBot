@@ -1,1 +1,2 @@
-# reddeggsBot
+## Build
+`go build -mod=vendor`
