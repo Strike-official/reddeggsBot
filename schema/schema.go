@@ -1,6 +1,12 @@
 package schema
 
-import "time"
+import (
+	"time"
+
+	"github.com/Strike-official/reddeggsBot/configmanager"
+)
+
+var Conf *configmanager.AppConfig
 
 type Strike_Meta_Request_Structure struct {
 
@@ -57,9 +63,16 @@ type GeoLocation_struct struct {
 type User_session_variables_struct struct {
 	OrderType []string `json:"order_type,omitempty"`
 	//Lat_long GeoLocation_struct `json:"lat_long,omitempty"`
-	OrderQuantity string   `json:"order_quantity,omitempty"`
-	OrderDate     []string `json:"order_date,omitempty"`
-	Route         []string `json:"route,omitempty"`
+	OrderQuantity      []string           `json:"order_quantity,omitempty"`
+	OrderDate          []string           `json:"order_date,omitempty"`
+	Route              []string           `json:"route,omitempty"`
+	DeliveryAddress    string             `json:"delivery_address"`
+	DeliveryLocation   GeoLocation_struct `json:"delivery_location"`
+	IsCouponExists     []string           `json:"is_coupon_exists"`
+	CouponValue        string             `json:"coupon_value"`
+	IsCouponApplied    string             `json:"is_coupon_applied"`
+	CouponAppliedValue string             `json:"coupon_applied_value"`
+	OrderConfirmation  []string           `json:"order_confirmation"`
 }
 
 type Wrapper struct {
@@ -68,4 +81,12 @@ type Wrapper struct {
 	Quantity         string    `json:"quantity"`
 	Order_time       time.Time `json:"order_time"`
 	Delivery_date    string    `json:"delivery_date"`
+}
+
+type InputFromUser struct {
+	OrderType        string
+	OrderQuantity    string
+	OrderDate        string
+	DeliveryAddress  string
+	DeliveryLocation GeoLocation_struct
 }

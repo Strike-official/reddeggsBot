@@ -7,12 +7,14 @@ import (
 	"log"
 	"strings"
 
+	"github.com/Strike-official/reddeggsBot/configmanager"
 	"github.com/Strike-official/reddeggsBot/schema"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func ConnectToRDS() *sql.DB {
-	db, err := sql.Open("mysql", "")
+	schema.Conf = configmanager.GetAppConfig()
+	db, err := sql.Open("mysql", schema.Conf.RDSCredentials)
 
 	if err != nil {
 		log.Println(err.Error())
@@ -69,17 +71,17 @@ func AddUserRDS(db *sql.DB, request schema.Strike_Meta_Request_Structure) string
 func AddOrder(db *sql.DB, request schema.Strike_Meta_Request_Structure, id string, item_total int64, item_description []string, delivery_date string) (string, error) {
 
 	phone := request.Bybrisk_session_variables.Phone
-	latitude := request.Bybrisk_session_variables.Location.Latitude
+	latitude := request.User_session_variables.DeliveryLocation.Latitude
 	// if latitude, err := strconv.ParseFloat(latitude_string, 64); err != nil {
 	// 	log.Println(err)
 	// }
 
-	longitude := request.Bybrisk_session_variables.Location.Longitude
+	longitude := request.User_session_variables.DeliveryLocation.Longitude
 	// if longitude, err := strconv.ParseFloat(longitude_string, 64); err != nil {
 	// 	log.Println(err)
 	// }
 
-	address := request.Bybrisk_session_variables.Address
+	address := request.User_session_variables.DeliveryAddress
 
 	var final_item_desc string
 	for index, item_description_indi := range item_description {
@@ -90,7 +92,7 @@ func AddOrder(db *sql.DB, request schema.Strike_Meta_Request_Structure, id strin
 		}
 	}
 
-	quantity := request.User_session_variables.OrderQuantity
+	quantity := request.User_session_variables.OrderQuantity[0]
 	status := "ACTIVE"
 
 	b := make([]byte, 6)
